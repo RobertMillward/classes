@@ -16,6 +16,7 @@ typedef struct EEPROMStruct
 }EEPROMT;
 
 extern EEPROMT EEPROM;
+extern void delay(int);
 
 #endif /* EEPROM_h */
 /**

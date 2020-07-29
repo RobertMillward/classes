@@ -12,7 +12,7 @@
 typedef struct SerialStruct
 {
     void begin(int);
-    void println(char[]); // TODO correct this argument type to match "zzz"
+    void println(char const *); // TODO correct this argument type to match "zzz"
 }SerialT;
 
 extern SerialT Serial;

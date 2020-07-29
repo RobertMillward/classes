@@ -27,8 +27,8 @@ public:
     void (*backlight)(void);
     void (*home)(void);
     void (*clear)(void);
-    void (*setCursor)(int, int);
-    void (*print)(char);
+    void (*setCursor)(int col, int row);
+    void (*print)(char const *);
 private:
 };
 

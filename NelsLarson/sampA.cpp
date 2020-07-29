@@ -34,6 +34,7 @@ char keyA = ' ';
 
 int Read = LOW;
 byte master_count = 0;
+bool done_save = true;
  */
 /**
  * LCD information
@@ -50,57 +51,44 @@ typedef enum relayEnum
 }relay;
 
 /**
- * Menu information
+ * Lcd information
+ * note: the EEPROM uses these enum values
  */
-typedef enum menuEnum
+typedef enum lcdColEnum
 {
-    MENU_NEW = 0,
-    MENU_TMP,
-    MENU_HUM,
-    MENU_CO2,
-    MENU_RESET
-}menuEnumT;
-int menu_count = MENU_NEW;
+    LCDCOL_TMP = 0,
+    LCDCOL_HUM,
+    LCDCOL_CO2
+}lcdColEnumT;
+#define LCDCOL_BEG 0
 
-void printMenuHeader(int menu_count)
+typedef enum lcdOneRowEnum
 {
-    char menuText[40];
-    char* menuName = "xxx";
-    switch(menu_count)
-    {
-        case MENU_TMP: menuName = "TEMP";      break;
-        case MENU_HUM: menuName = "humidity";  break;
-        case MENU_CO2: menuName = "CO2";       break;
-    }
-    lcd.print("Set " + menuName + ": ");
-}
+    LCD1ROW_TOP,
+    LCD1ROW_DTA
+}lcdOneRowEnumT;
 
-/**
- * Other controls
- */
-int value_set1 = 0;
-bool done_save = true;
-char Data[5];
-byte data_count = 0;
-bool aloop = true;
-
-
-typedef enum lcdEnum
+typedef enum lcdMultiRowEnum
 {
-    LCD_TMP = 0,
-    LCD_HUM,
-    LCD_CO2
-}lcdEnumT;
+    LCDNROW_TOP = 0,
+    LCDNROW_TMP = 2,
+    LCDNROW_HUM,
+    LCDNROW_CO2
+}lcdManyRowEnumT;
+
 int mapped_t = 100;
 int mapped_c = 1000;
 int mapped_h = 100;
 
+/**
+ * Sensor information
+ */
 SCD30 airSensor;
 
 
 
 /**
- * Keypad
+ * Keypad information
  */
 #define KEY_SCRA 'A'
 #define KEY_SCRB 'B'
@@ -117,6 +105,56 @@ char keys[ROW_NUM][COLUMN_NUM] = {
     {KEY_READ, '0', KEY_MENU, 'D'}
 };
 Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
+
+
+/**
+ * Other controls
+ */
+int value_set1 = 0;
+char Data[5];
+byte data_count = 0;
+bool aloop = true;
+
+/**
+ * Menu information
+ */
+typedef enum menuEnum
+{
+    MENU_NEW = 0,
+    MENU_TMP,
+    MENU_HUM,
+    MENU_CO2,
+    MENU_RESET
+}menuEnumT;
+int menu_count = MENU_NEW;
+
+
+void printMenuHeader(int menu_count)
+{
+    lcd.clear();
+    lcd.setCursor(LCDCOL_BEG, LCDNROW_TOP);
+    
+    switch(menu_count)
+    {
+        case MENU_TMP: lcd.print("Set TEMP :");      break;
+        case MENU_HUM: lcd.print("Set humidity :");  break;
+        case MENU_CO2: lcd.print("Set CO2 :");       break;
+    }
+}
+
+void printMenuFooter(int menu_count)
+{
+    lcd.clear();
+    lcd.setCursor(LCDCOL_BEG, LCDNROW); // This matches the sent code:
+    switch(menu_count)
+    {
+        case MENU_TMP: lcd.print("Done setting TEMP");      break;
+        case MENU_HUM: lcd.print("Done setting humidity");  break;
+        case MENU_CO2: lcd.print("Done setting CO2");       break;
+    }
+    
+    delay(1000);
+}
 
 // Code
 void setup()
@@ -138,54 +176,47 @@ void setup()
     pinMode(relay_hum, OUTPUT);// set relay pin as output
     pinMode(relay_temp, OUTPUT);// set relay pin as output
     //The SCD30 has data ready every two seconds
-    mapped_t = EEPROM.read(LCD_TMP);
-    mapped_h = EEPROM.read(LCD_HUM);
-    mapped_c = EEPROM.read(LCD_CO2);
+    mapped_t = EEPROM.read(LCDCOL_TMP);
+    mapped_h = EEPROM.read(LCDCOL_HUM);
+    mapped_c = EEPROM.read(LCDCOL_CO2);
 }
 
 
 void processKeypadInput(int menu_count)
 {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    
-    int epromCol = -1;
-    string menuName = "xxx";
-    switch(menu_count)
-    {
-        case MENU_TMP: menuName = "TEMP";     epromCol = LCD_TMP; break;
-        case MENU_HUM: menuName = "humidity"; epromCol = LCD_HUM; break;
-        case MENU_CO2: menuName = "CO2";      epromCol = LCD_CO2; break;
-    }
-    lcd.print("Set " + menuName + ": ");
-    
     printMenuHeader(menu_count);
     
     char customKey = keypad.getKey();
     if (customKey) // makes sure a key is actually pressed, equal to (customKey != NO_KEY)
     {
         Data[data_count] = customKey; // store char into data array
-        // TODO: might the '1' below be epromCol?
-        lcd.setCursor(data_count, 1); // move cursor to show each new char
+        // TODO: might the LCD1ROW_DTA below be epromCol?
+        lcd.setCursor(data_count, LCD1ROW_DTA); // move cursor to show each new char
         lcd.print(Data[data_count]); // print char at said cursor
         data_count++; // increment data array by 1 to store new char, also keep track of the number of chars entered
         
     }
     if (customKey == KEY_READ) // if the array index is equal to the number of expected chars, compare data to master
     {
+        int epromCol = -1;
+        switch(menu_count)
+        {
+            case MENU_TMP: epromCol = LCDCOL_TMP; break;
+            case MENU_HUM: epromCol = LCDCOL_HUM; break;
+            case MENU_CO2: epromCol = LCDCOL_CO2; break;
+        }
         EEPROM.write(epromCol, Data[data_count]);
+        
         switch(menu_count)
         {
             case MENU_TMP: mapped_t = Data[data_count]; break;
             case MENU_HUM: mapped_h = Data[data_count]; break;
             case MENU_CO2: mapped_c = Data[data_count]; break;
         }
-        lcd.clear();
-        lcd.setCursor(0, 0); // This matches the sent code:
-        lcd.print("done setting for " + menuName);
-        //delay(1000); TODO
+        
+        printMenuFooter(menu_count);
+        
         value_set1 = false;
-        done_save = true;
         aloop = true;
     }
 }
@@ -194,19 +225,19 @@ void loop()
 {
     if (aloop) {
         lcd.clear();
-        lcd.setCursor(0, LCD_TMP);
-        //lcd.print("Target Temp ");
+        lcd.setCursor(LCDCOL_BEG, LCDNROW_TMP);
+        lcd.print("Target Temp ");
         lcd.print(mapped_t);
         
-        lcd.setCursor(0, LCD_HUM);
-        //lcd.print("Target RH ");
+        lcd.setCursor(LCDCOL_BEG, LCDNROW_HUM);
+        lcd.print("Target RH ");
         lcd.print(mapped_h);
         
-        lcd.setCursor(0, LCD_CO2 );
-        //lcd.print("Target CO2 ");
+        lcd.setCursor(LCDCOL_BEG, LCDNROW_CO2);
+        lcd.print("Target CO2 ");
         lcd.print(mapped_c);
         
-        //delay(100); TODO
+        delay(100);
         aloop = false;
     }
     
@@ -214,24 +245,26 @@ void loop()
     if (keyB == KEY_MENU ) {
         menu_count = menu_count + 1;
         value_set1 = true;
-        done_save = false;
+        //done_save = false; not needed
         keyB = 'd';
         if (menu_count == MENU_RESET) {
             menu_count = MENU_NEW + 1;
         }
         //       the temperature is set in this loop
         //==================================================
-        while ( value_set1 == true && menu_count == 1) {
+        while ( value_set1 == true && menu_count == MENU_TMP) {
             processKeypadInput(menu_count);
         }
         //======================================================
-        while ( value_set1 == true && menu_count == 2) {
+        while ( value_set1 == true && menu_count == MENU_HUM) {
             processKeypadInput(menu_count);
         }
         //=====================================================
-        while ( value_set1 == true && menu_count == 3) {
+        while ( value_set1 == true && menu_count == MENU_CO2) {
             processKeypadInput(menu_count);
         }
+        
+        // done_save = true; not needed
     }
 }
 // END sampA.cpp
