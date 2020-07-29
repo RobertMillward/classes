@@ -12,10 +12,14 @@
 class Keypad
 {
 public:
+    Keypad( int mkKeymap, int pin_rows, int pin_column, int ROW_NUM, int COLUMN_NUM );
+    
     void (*init)(void);
     char (*getKey)(void);
 private:
 };
+
+extern int makeKeymap(char[4][4]);
 
 #endif /* Keypad_h */
 /**

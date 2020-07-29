@@ -28,9 +28,12 @@ public:
     void (*home)(void);
     void (*clear)(void);
     void (*setCursor)(int, int);
-    void (*print)(char*);
+    void (*print)(char);
 private:
 };
+
+#define OUTPUT 1
+extern void pinMode(int, int tofrom);
 
 
 
