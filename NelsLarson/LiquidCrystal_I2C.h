@@ -17,7 +17,7 @@ typedef unsigned char uint8_t;
 
 #define LCD_5x8DOTS 0x00
 
-class LiquidCrystal_I2C
+class LiquidCrystal_I2C /* : public Print */
 {
 public:
     LiquidCrystal_I2C(uint8_t addr, uint8_t cols, uint8_t rows);
@@ -29,6 +29,7 @@ public:
     void (*clear)(void);
     void (*setCursor)(int col, int row);
     void (*print)(char const *);
+    //void (*print)(char); multiple formats (see constructor)
 private:
 };
 

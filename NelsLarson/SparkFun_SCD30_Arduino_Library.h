@@ -9,7 +9,7 @@
 #ifndef SparkFun_SCD30_Arduino_Library_h
 #define SparkFun_SCD30_Arduino_Library_h
 
-#include "Wire.h" // is a <> file in reality, not quotes file
+//#include "Wire.h" // is a <> file in reality, not quotes file
 
 class SCD30
 {

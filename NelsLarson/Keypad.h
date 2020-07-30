@@ -8,11 +8,18 @@
 
 #ifndef Keypad_h
 #define Keypad_h
+#include "Wire.h" // is a <> file in reality, not quotes file. See also SCD30
+
+typedef unsigned char byte;
 
 class Keypad
 {
 public:
-    Keypad( int mkKeymap, int pin_rows, int pin_column, int ROW_NUM, int COLUMN_NUM );
+    Keypad( int mkKeymap,
+           byte pin_rows[],
+           byte pin_column[],
+           int ROW_NUM,
+           int COLUMN_NUM );
     
     void (*init)(void);
     char (*getKey)(void);

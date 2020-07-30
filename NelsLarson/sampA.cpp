@@ -52,15 +52,15 @@ typedef enum relayEnum
 
 /**
  * Lcd information
- * note: the EEPROM uses these enum values
+ * note: the EEPROM code also uses these enum values
  */
+#define LCDCOL_BEG 0
 typedef enum lcdColEnum
 {
-    LCDCOL_TMP = 0,
+    LCDCOL_TMP = LCDCOL_BEG,
     LCDCOL_HUM,
     LCDCOL_CO2
 }lcdColEnumT;
-#define LCDCOL_BEG 0
 
 typedef enum lcdOneRowEnum
 {
@@ -76,6 +76,9 @@ typedef enum lcdMultiRowEnum
     LCDNROW_CO2
 }lcdManyRowEnumT;
 
+/**
+ * The values from the keypad
+ */
 int mapped_t = 100;
 int mapped_c = 1000;
 int mapped_h = 100;
@@ -145,7 +148,7 @@ void printMenuHeader(int menu_count)
 void printMenuFooter(int menu_count)
 {
     lcd.clear();
-    lcd.setCursor(LCDCOL_BEG, LCDNROW); // This matches the sent code:
+    lcd.setCursor(LCDCOL_BEG, LCDNROW_TOP); // This matches the sent code:
     switch(menu_count)
     {
         case MENU_TMP: lcd.print("Done setting TEMP");      break;
@@ -156,7 +159,7 @@ void printMenuFooter(int menu_count)
     delay(1000);
 }
 
-// Code
+
 void setup()
 {
     Serial.begin(9600);
