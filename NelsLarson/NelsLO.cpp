@@ -8,8 +8,8 @@
 #include "Serial.h"
 #include "LibEEPROMO0.h"
 #include "LibKeypadO0.h"
-#include "LibAppLcdAsIs.h"
-#include "LibAppLcdToBe.h"
+#include "LibAppLcdAsIsO2.h"
+#include "LibAppLcdToBeO2.h"
 
 /**
  * The values from the keypad or initially the EEPROM
@@ -39,9 +39,9 @@ void setup()
 
 void displayAsIs()
 {
-    mapped_t = EEPROM.read(LCDCOL_TMP);
-    mapped_h = EEPROM.read(LCDCOL_HUM);
-    mapped_c = EEPROM.read(LCDCOL_CO2);
+    mapped_t = EEPROM.read(LCDTOBECOL_TMP);
+    mapped_h = EEPROM.read(LCDTOBECOL_HUM);
+    mapped_c = EEPROM.read(LCDTOBECOL_CO2);
     
     lcd_asis_display(mapped_t, mapped_h, mapped_c);
 
@@ -52,10 +52,10 @@ void processUserKeyInput(int menu_count)
 {
     printMenuHeader(menu_count);
     
-    Data[data_count] = customKey; // store char into data array
+    Data[data_count] = kypd_pressed; // store char into data array
                                   // TODO: might the LCD1ROW_DTA below be epromCol?
-    lcd_tobe.setCursor(data_count, LCD1ROW_DTA); // move cursor to show each new char
-    lcd.print(Data[data_count]); // print char at said cursor
+    lcd_tobe.setCursor(data_count, LCDTOBEROW_DTA); // move cursor to show each new char
+    lcd_tobe.print(Data[data_count]); // print char at said cursor
     data_count++; // increment data array by 1 to store new char, also keep track of the number of chars entered
     
     if (isUserKeyEnter())
@@ -65,30 +65,30 @@ void processUserKeyInput(int menu_count)
         {
             case MENU_TMP:
                 mapped_t = Data[data_count];
-                epromCol = LCDCOL_TMP;
+                epromCol = LCDTOBECOL_TMP;
                 break;
             case MENU_HUM:
                 mapped_h = Data[data_count];
-                epromCol = LCDCOL_HUM;
+                epromCol = LCDTOBECOL_HUM;
                 break;
             case MENU_CO2:
                 mapped_c = Data[data_count];
-                epromCol = LCDCOL_CO2;
+                epromCol = LCDTOBECOL_CO2;
                 break;
         }
         EEPROM.write(epromCol, Data[data_count]); // TODO: update
         
         printMenuFooter(menu_count);
 
-        lcdAsIsUpdated = true;
+        lcdAsIsRevised = true;
     }
 }
 
 void loop()
 {    // Any time that the mapped_? data has been refreshed then repaint the lcd
-    if (lcdAsIsUpdated) {
+    if (lcdAsIsRevised) {
         displayAsIs();
-        lcdAsIsUpdated = false;
+        lcdAsIsRevised = false;
     }
     
     getUserKey();

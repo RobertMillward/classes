@@ -6,9 +6,8 @@
 //  Copyright © 2020 Robert Russell Millward. All rights reserved.
 //
 
-#ifndef LcdBase_h
-#define LcdBase_h
-#include "LiquidCrystal_I2C.h"
+#ifndef LibLcdO1_h
+#define LibLcdO1_h
 
 #define LCDCOL_BEG 0
 
@@ -38,5 +37,5 @@ void lcd_data(LiquidCrystal_I2C some_lcd, int data, int row, int col)
 #endif /* LibLcdO1_h */
 /**
  * Basic connections to any LCD
- * Start with level 0..
+ * Start with level 0.
  */
