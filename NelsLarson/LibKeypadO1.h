@@ -1,13 +1,13 @@
 //
-//  KeypadFinish.h
+//  LibKeypadO1.h
 //  MIT License
 //
 //  Created by Robert Russell Millward on 7/30/20.
 //  Copyright © 2020 Robert Russell Millward. All rights reserved.
 //
 
-#ifndef KeypadFinish_h
-#define KeypadFinish_h
+#ifndef LibKeypadO1_h
+#define LibKeypadO1_h
 
 Keypad keypad = Keypad( makeKeymap(kypd_keys),
                        kypd_pin_rows,
@@ -61,7 +61,8 @@ bool isUserKeyMenuDown()
 }
 
 
-#endif /* KeypadFinish_h */
+#endif /* LibKeypadO1_h */
 /**
- * Finish the given Keypad
+ * Finish the given Keypad with a common interface for version O (2020) <sku series 1>
+ * Start with Level 0.
  */

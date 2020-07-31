@@ -1,13 +1,13 @@
 //
-//  KeypadPhoneABCD.h
-//  NelsLarsonA
+//  LibKeypadO0.h
+//  MIT License
 //
 //  Created by Robert Russell Millward on 7/30/20.
 //  Copyright © 2020 Robert Russell Millward. All rights reserved.
 //
 
-#ifndef KeypadPhoneABCD_h
-#define KeypadPhoneABCD_h
+#ifndef LibKeypadO0_h
+#define LibKeypadO0_h
 #include "Keypad.h"
 
 typedef unsigned char byte; // TODO: resolve
@@ -30,9 +30,9 @@ char kypd_keys[KYPD_ROWS][KYPD_COLS] =
 #define KYPD_COL_ENTER 0
 #define KYPD_COL_MNUDN 2
 
-#include "KeyPadFinish.h"
+#include "LibKeypadO1.h" // Automatically provide the sku series interface.
 
-#endif /* KeypadPhoneABCD_h */
+#endif /* LibKeypadO0_h */
 /**
  * A phone pad plus a column of A, B, C, D
  */

@@ -1,5 +1,5 @@
 //
-//  LcdBase.h
+//  LibLcdO1.h
 //  MIT License
 //
 //  Created by Robert Russell Millward on 7/30/20.
@@ -9,6 +9,8 @@
 #ifndef LcdBase_h
 #define LcdBase_h
 #include "LiquidCrystal_I2C.h"
+
+#define LCDCOL_BEG 0
 
 void lcd_setup(LiquidCrystal_I2C some_lcd)
 {
@@ -27,10 +29,14 @@ void lcd_header(LiquidCrystal_I2C some_lcd, char* header)
 void lcd_data(LiquidCrystal_I2C some_lcd, int data, int row, int col)
 {
     some_lcd.setCursor(col, row);
+    char asciiOut[20] = "not";
+//    sprintf(asciiOut, "%d", data); TODO:
+    some_lcd.print(asciiOut);
 }
 
 
-#endif /* LcdBase_h */
+#endif /* LibLcdO1_h */
 /**
- * Basic connections to any LCD 
+ * Basic connections to any LCD
+ * Start with level 0..
  */

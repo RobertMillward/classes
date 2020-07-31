@@ -12,6 +12,13 @@
 
 LiquidCrystal_I2C lcd_tobe(0x27, 20, 4); // set the address for a 2x16 chars display
 
+typedef enum lcdColEnum
+{
+    LCDCOL_TMP = LCDCOL_BEG,
+    LCDCOL_HUM,
+    LCDCOL_CO2
+}lcdColEnumT;
+
 
 #endif /* LcdToBe_h */
 /**
