@@ -27,6 +27,7 @@ private:
 };
 
 extern int makeKeymap(char[4][4]);
+extern void delay(int);
 
 #endif /* Keypad_h */
 /**

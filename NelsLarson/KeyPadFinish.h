@@ -16,6 +16,29 @@ Keypad keypad = Keypad( makeKeymap(kypd_keys),
                        KYPD_COLS );
 
 char kypd_pressed = 0;
+char Data[5];
+int data_count = 0;
+
+typedef enum menuEnum
+{
+    MENU_NEW = 0,
+    MENU_TMP,
+    MENU_HUM,
+    MENU_CO2,
+    MENU_RESET
+}menuEnumT;
+int menu_count = MENU_NEW;
+
+
+void getNextMenuDown()
+{
+    menu_count = menu_count + 1;
+    if (menu_count == MENU_RESET) {
+        menu_count = MENU_NEW + 1;
+    }
+    // clear data
+    data_count = 0;
+}
 
 void getUserKey()
 {

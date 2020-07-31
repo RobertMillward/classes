@@ -36,10 +36,7 @@ int Read = LOW;
 byte master_count = 0;
 bool done_save = true;
  */
-/**
- * LCD information
- */
-LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 16 chars and 2 line display
+
 /**
  * Relay information
  */
@@ -54,6 +51,7 @@ typedef enum relayEnum
  * Lcd information
  * note: the EEPROM code also uses these enum values
  */
+LiquidCrystal_I2C lcd(0x27, 20, 4); // set the LCD address to 0x27 for a 2x16 chars display
 #define LCDCOL_BEG 0
 typedef enum lcdColEnum
 {
@@ -77,14 +75,15 @@ typedef enum lcdMultiRowEnum
 }lcdManyRowEnumT;
 
 /**
- * The values from the keypad
+ * The values from the keypad or initially the EEPROM
  */
 int mapped_t = 100;
 int mapped_c = 1000;
 int mapped_h = 100;
+bool mapped_refreshed = true;
 
 /**
- * Sensor information
+ * SparkFun_SCD30 Sensor information
  */
 SCD30 airSensor;
 
@@ -108,15 +107,14 @@ char keys[ROW_NUM][COLUMN_NUM] = {
     {KEY_READ, '0', KEY_MENU, 'D'}
 };
 Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_column, ROW_NUM, COLUMN_NUM );
+char Data[5];
+byte data_count = 0;
 
 
 /**
  * Other controls
  */
-int value_set1 = 0;
-char Data[5];
-byte data_count = 0;
-bool aloop = true;
+static bool value_set1 = false; // this isn't needed
 
 /**
  * Menu information
@@ -204,29 +202,32 @@ void processKeypadInput(int menu_count)
         int epromCol = -1;
         switch(menu_count)
         {
-            case MENU_TMP: epromCol = LCDCOL_TMP; break;
-            case MENU_HUM: epromCol = LCDCOL_HUM; break;
-            case MENU_CO2: epromCol = LCDCOL_CO2; break;
+            case MENU_TMP:
+                mapped_t = Data[data_count];
+                epromCol = LCDCOL_TMP;
+                break;
+            case MENU_HUM:
+                mapped_h = Data[data_count];
+                epromCol = LCDCOL_HUM;
+                break;
+            case MENU_CO2:
+                mapped_c = Data[data_count];
+                epromCol = LCDCOL_CO2;
+                break;
         }
-        EEPROM.write(epromCol, Data[data_count]);
-        
-        switch(menu_count)
-        {
-            case MENU_TMP: mapped_t = Data[data_count]; break;
-            case MENU_HUM: mapped_h = Data[data_count]; break;
-            case MENU_CO2: mapped_c = Data[data_count]; break;
-        }
+        EEPROM.write(epromCol, Data[data_count]); // update
         
         printMenuFooter(menu_count);
         
         value_set1 = false;
-        aloop = true;
+        mapped_refreshed = true;
     }
 }
 
 void loop()
 {
-    if (aloop) {
+    // Any time that the mapped_? data has been refreshed then repaint the lcd
+    if (mapped_refreshed) {
         lcd.clear();
         lcd.setCursor(LCDCOL_BEG, LCDNROW_TMP);
         lcd.print("Target Temp ");
@@ -241,7 +242,7 @@ void loop()
         lcd.print(mapped_c);
         
         delay(100);
-        aloop = false;
+        mapped_refreshed = false;
     }
     
     char keyB = keypad.getKey();

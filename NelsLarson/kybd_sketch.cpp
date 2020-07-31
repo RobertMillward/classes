@@ -5,7 +5,6 @@
 //  Created by Robert Russell Millward on 7/30/20.
 //  Copyright © 2020 Robert Russell Millward. All rights reserved.
 //
-//#include <stdio.h>
 #include "KeypadPhoneABCD.h"
 
 void setup()
@@ -21,17 +20,14 @@ void loop()
     {
         if(isUserKeyMenuDown())
         {
-            // A change to menu will occur only if requested
-            menu_count = menu_count + 1;
-            if (menu_count == MENU_RESET) {
-                menu_count = MENU_NEW + 1;
-            }
-            // clear data
-            data_count = 0;
+            // A change to menu will occur when ewquested
+            getNextMenuDown();
         }else{
             // A change to data will occur only if a non-control key was pressed
-            
+            // processUserKeyInput(menu_count);
         }
+    }else{
+        delay(200); // key presses could be weeks apart.
     }
 }
 
