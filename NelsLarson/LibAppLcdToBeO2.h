@@ -13,6 +13,7 @@
 LiquidCrystal_I2C lcd_tobe(0x27, 20, 4); // set the address for a 2x16 chars display
 
 #define LCDTOBEROW_TOP 0
+#define LCDTOBEROW_DTA 0
 
 typedef enum lcdToBeColEnum
 {
@@ -24,7 +25,7 @@ typedef enum lcdToBeColEnum
 
 void printMenuHeader(int menu_count)
 {
-    lcd_tobe.clear();
+    lcd_tobe.clear(); // TODO: lcd_header()
     lcd_tobe.setCursor(LCDCOL_BEG, LCDTOBEROW_TOP);
     
     switch(menu_count)
@@ -37,7 +38,7 @@ void printMenuHeader(int menu_count)
 
 void printMenuFooter(int menu_count)
 {
-    lcd_tobe.clear();
+    lcd_tobe.clear(); // TODO: lcd_header()
     lcd_tobe.setCursor(LCDCOL_BEG, LCDTOBEROW_TOP); // This matches the sent code:
     switch(menu_count)
     {

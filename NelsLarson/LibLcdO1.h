@@ -8,7 +8,7 @@
 
 #ifndef LibLcdO1_h
 #define LibLcdO1_h
-
+static int LIBLCD01;
 #define LCDCOL_BEG 0
 
 void lcd_setup(LiquidCrystal_I2C some_lcd)
@@ -18,10 +18,10 @@ void lcd_setup(LiquidCrystal_I2C some_lcd)
     some_lcd.home();
 }
 
-void lcd_header(LiquidCrystal_I2C some_lcd, char* header)
+void lcd_header(LiquidCrystal_I2C some_lcd, int row, char* header)
 {
     some_lcd.clear();
-    //some_lcd.setCursor(LCDCOL_BEG, LCDNROW_TOP); TODO
+    some_lcd.setCursor(LCDCOL_BEG, row);
     some_lcd.print(header);
 }
 

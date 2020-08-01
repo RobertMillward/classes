@@ -10,10 +10,11 @@
 #define LibLcdO0_h
 #include "LiquidCrystal_I2C.h"
 
+static int LIBLCDO0;
 
 #include "LibLcdO1.h"
 
 #endif /* LibLcdO0_h */
 /**
- *
+ * Storage for a particular set of SKU numbers
  */

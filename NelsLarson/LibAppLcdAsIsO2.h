@@ -29,13 +29,13 @@ void lcd_asis_display(int mapped_t, int mapped_h, int mapped_c)
     lcd_asis.clear();
     
     lcd_asis.print("Target Temp ");
-    lcd_data(lcd_asis, mapped_t, LCDASISROW_TMP, LCDCOL_BEG)(mapped_t);
+    //lcd_data(lcd_asis, mapped_t, LCDASISROW_TMP, LCDCOL_BEG)(mapped_t);
     
     lcd_asis.print("Target RH ");
-    lcd_data(lcd_asis, mapped_h, LCDASISROW_TMP, LCDCOL_BEG)(mapped_h);
+    //lcd_data(lcd_asis, mapped_h, LCDASISROW_HUM, LCDCOL_BEG)(mapped_h);
     
     lcd_asis.print("Target CO2 ");
-    lcd_data(lcd_asis, mapped_t, LCDASISROW_TMP, LCDCOL_BEG)(mapped_c);
+    //lcd_data(lcd_asis, mapped_t, LCDASISROW_CO2, LCDCOL_BEG)(mapped_c);
 }
 
 #endif /* LibAppLcdAsIsO2_h */

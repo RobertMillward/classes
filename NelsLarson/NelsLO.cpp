@@ -52,10 +52,8 @@ void processUserKeyInput(int menu_count)
 {
     printMenuHeader(menu_count);
     
-    Data[data_count] = kypd_pressed; // store char into data array
-                                  // TODO: might the LCD1ROW_DTA below be epromCol?
-    lcd_tobe.setCursor(data_count, LCDTOBEROW_DTA); // move cursor to show each new char
-    lcd_tobe.print(Data[data_count]); // print char at said cursor
+    Data[data_count] = kypd_pressed; // store char into data array\
+    lcd_data(lcd_tobe, Data[data_count], LCDTOBEROW_DTA, 0); // print char at said cursor
     data_count++; // increment data array by 1 to store new char, also keep track of the number of chars entered
     
     if (isUserKeyEnter())
