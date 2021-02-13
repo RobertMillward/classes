@@ -1,1 +1,3 @@
 # classes
+
+Training materials.
